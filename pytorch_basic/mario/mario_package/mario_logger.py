@@ -1,5 +1,6 @@
 import numpy as np
-import time, datetime
+import time
+import datetime
 import matplotlib.pyplot as plt
 
 
@@ -51,7 +52,8 @@ class MetricLogger:
             ep_avg_loss = 0
             ep_avg_q = 0
         else:
-            ep_avg_loss = np.round(self.curr_ep_loss / self.curr_ep_loss_length, 5)
+            ep_avg_loss = np.round(self.curr_ep_loss /
+                                   self.curr_ep_loss_length, 5)
             ep_avg_q = np.round(self.curr_ep_q / self.curr_ep_loss_length, 5)
         self.ep_avg_losses.append(ep_avg_loss)
         self.ep_avg_qs.append(ep_avg_q)
@@ -77,7 +79,8 @@ class MetricLogger:
 
         last_record_time = self.record_time
         self.record_time = time.time()
-        time_since_last_record = np.round(self.record_time - last_record_time, 3)
+        time_since_last_record = np.round(
+            self.record_time - last_record_time, 3)
 
         print(
             f"Episode {episode} - "

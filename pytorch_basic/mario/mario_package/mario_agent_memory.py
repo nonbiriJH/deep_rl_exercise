@@ -5,10 +5,10 @@ import random
 
 #agent's memory
 class Mario(Mario):  # subclassing for continuity
-    def __init__(self, state_dim, action_dim):
+    def __init__(self, state_dim, action_dim, memory_maxlen, batch_size):
         super().__init__(state_dim, action_dim)
-        self.memory = deque(maxlen=100000)
-        self.batch_size = 32
+        self.memory = deque(maxlen=memory_maxlen)
+        self.batch_size = batch_size
 
     def cache(self, state, next_state, action, reward, done):
         """

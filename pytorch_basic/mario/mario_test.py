@@ -33,12 +33,14 @@ print(f"Using CUDA: {use_cuda}")
 print()
 
 mario = Mario(state_dim=(4, 84, 84), action_dim=env.action_space.n)
-mario.load("/Users/junhongchen/Documents/GitHub/deep_rl_exercise/pytorch_basic/mario/checkpoints/2022-03-13T01-35-05/mario_net_3.chkpt")
+mario.load(r"C:\Users\Junhong Chen\Documents\GitHub\deep_rl_exercise\pytorch_basic\mario\checkpoints\2022-05-07T12-41-54\mario_net_18.chkpt")
 
 episodes = 3
 for e in range(episodes):
 
     state = env.reset()
+    cum_reward = 0
+    length = 0
 
     # Play the game!
     while True:
@@ -54,7 +56,10 @@ for e in range(episodes):
 
         # Update state
         state = next_state
+        cum_reward += reward
+        length += 1
 
         # Check if end of game
         if done or info["flag_get"]:
+            print(cum_reward, length)
             break

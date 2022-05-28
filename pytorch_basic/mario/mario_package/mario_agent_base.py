@@ -2,6 +2,7 @@ import torch
 from .mario_model import MarioNet
 import numpy as np
 
+
 class Mario:
     def __init__(self, state_dim, action_dim):
         self.state_dim = state_dim
@@ -14,7 +15,7 @@ class Mario:
 
         self.exploration_rate = 1
 
-    def load(self,load_path):
+    def load(self, load_path):
         try:
             self.net.load_state_dict(torch.load(load_path)['model'])
             self.exploration_rate = torch.load(load_path)['exploration_rate']
@@ -22,7 +23,8 @@ class Mario:
             print(
                 f"no weights are loaded as either {load_path} cannot be found or incompatible to current model.")
         else:
-            print(f"weights are loaded successfuly! exploration_rate is {self.exploration_rate}")
+            print(
+                f"weights are loaded successfuly! exploration_rate is {self.exploration_rate}")
 
     def act(self, state):
         """
@@ -39,7 +41,7 @@ class Mario:
 
         # EXPLOIT
         else:
-            state = state.__array__() #from lazy frame to array
+            state = state.__array__()  # from lazy frame to array
             if self.use_cuda:
                 state = torch.tensor(state).cuda()
             else:
@@ -49,6 +51,3 @@ class Mario:
             action_idx = torch.argmax(action_values, axis=1).item()
 
         return action_idx
-
-
-    

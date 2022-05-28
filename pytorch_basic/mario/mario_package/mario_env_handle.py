@@ -31,7 +31,8 @@ class GrayScaleObservation(gym.ObservationWrapper):
     def __init__(self, env):
         super().__init__(env)
         obs_shape = self.observation_space.shape[:2]
-        self.observation_space = Box(low=0, high=255, shape=obs_shape, dtype=np.uint8)
+        self.observation_space = Box(
+            low=0, high=255, shape=obs_shape, dtype=np.uint8)
 
     def permute_orientation(self, observation):
         # permute [H, W, C] array to [C, H, W] tensor
@@ -55,10 +56,11 @@ class ResizeObservation(gym.ObservationWrapper):
             self.shape = tuple(shape)
 
         obs_shape = self.shape + self.observation_space.shape[2:]
-        self.observation_space = Box(low=0, high=255, shape=obs_shape, dtype=np.uint8)
+        self.observation_space = Box(
+            low=0, high=255, shape=obs_shape, dtype=np.uint8)
 
     def observation(self, observation):
-        #bilinear resize
+        # bilinear resize
         transforms = T.Compose(
             [T.Resize(self.shape), T.Normalize(0, 255)]
         )

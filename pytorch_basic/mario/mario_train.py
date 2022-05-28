@@ -10,7 +10,9 @@ import gym_super_mario_bros
 
 # Gym is an OpenAI toolkit for RL
 from gym.wrappers import FrameStack
-from mario_package.mario_env_handle import SkipFrame, GrayScaleObservation, ResizeObservation
+from mario_package.mario_env_handle import (SkipFrame,
+                                            GrayScaleObservation,
+                                            ResizeObservation)
 
 from mario_package.mario_agent_learn import Mario
 from mario_package.mario_logger import MetricLogger
@@ -34,16 +36,27 @@ use_cuda = torch.cuda.is_available()
 print(f"Using CUDA: {use_cuda}")
 print()
 
-save_dir = Path("checkpoints") / datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+save_dir = Path("checkpoints") / \
+    datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 save_dir.mkdir(parents=True)
 
-mario = Mario(state_dim=(4, 84, 84), action_dim=env.action_space.n, save_dir=save_dir,exploration_rate_decay=0.99999975,save_every=2e5,learn_rate=0.00025)
-mario.load("/Users/junhongchen/Documents/GitHub/deep_rl_exercise/pytorch_basic/mario/checkpoints/2022-03-13T01-35-05/mario_net_3.chkpt")
+mario = Mario(state_dim=(4, 84, 84),
+              action_dim=env.action_space.n,
+              save_dir=save_dir,
+              exploration_rate_decay=0.999999,  # 3000k step
+              save_every=2e5,
+              learn_rate=0.0005,  # double batch size double learning rate
+              memory_maxlen=50000,  # to fit gpu memory
+              batch_size=64  # to utilise gpu more by larger bbatch
+              )
+mario.load(r"C:\Users\Junhong Chen\Documents\GitHub\deep_rl_exercise\pytorch_basic\mario\checkpoints\2022-05-07T09-37-15\mario_net_5.chkpt")
 
 logger = MetricLogger(save_dir)
 
-episodes = 100
-for e in range(episodes):
+total_step = 3600000
+step_counter = 0
+episode_counter = 0
+while step_counter <= total_step:
 
     state = env.reset()
 
@@ -68,11 +81,15 @@ for e in range(episodes):
         # Update state
         state = next_state
 
+        step_counter += 1
+
         # Check if end of game
         if done or info["flag_get"]:
+            episode_counter += 1
             break
 
     logger.log_episode()
 
-    if e % 20 == 0:
-        logger.record(episode=e, epsilon=mario.exploration_rate, step=mario.curr_step)
+    if episode_counter % 20 == 0:
+        logger.record(episode=episode_counter, epsilon=mario.exploration_rate,
+                      step=mario.curr_step)
