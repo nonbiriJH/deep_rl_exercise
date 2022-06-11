@@ -1,4 +1,4 @@
-from player import Player
+from typing import Dict, List, Optional
 
 class Action(object):
 
@@ -20,7 +20,7 @@ class ActionHistory(object):
   Only used to keep track of the actions executed.
   """
 
-  def __init__(self, history: list[Action], action_space_size: int):
+  def __init__(self, history: List[Action], action_space_size: int):
     self.history = list(history)
     self.action_space_size = action_space_size
 
@@ -33,8 +33,5 @@ class ActionHistory(object):
   def last_action(self) -> Action:
     return self.history[-1]
 
-  def action_space(self) -> list[Action]:
+  def action_space(self) -> List[Action]:
     return [Action(i) for i in range(self.action_space_size)]
-
-  def to_play(self) -> Player:
-    return Player()

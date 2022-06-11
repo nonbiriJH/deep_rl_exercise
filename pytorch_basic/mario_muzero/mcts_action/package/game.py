@@ -1,8 +1,8 @@
 from environment import Environment
 from action import Action, ActionHistory
 from node import Node
-from player import Player
-
+from typing import List
+# A game is stored in the replay buffer when it is terminated
 class Game(object):
   """A single episode of interaction with the environment."""
 
@@ -19,7 +19,7 @@ class Game(object):
     # Game specific termination rules.
     pass
 
-  def legal_actions(self) -> list[Action]:
+  def legal_actions(self) -> List[Action]:
     # Game specific calculation of legal actions.
     return []
 
@@ -41,8 +41,7 @@ class Game(object):
     # Game specific feature planes.
     return []
 
-  def make_target(self, state_index: int, num_unroll_steps: int, td_steps: int,
-                  to_play: Player):
+  def make_target(self, state_index: int, num_unroll_steps: int, td_steps: int):
     # The value target is the discounted root value of the search tree N steps
     # into the future, plus the discounted sum of all rewards until then.
     targets = []
@@ -70,9 +69,6 @@ class Game(object):
         # States past the end of games are treated as absorbing states.
         targets.append((0, last_reward, []))
     return targets
-
-  def to_play(self) -> Player:
-    return Player()
 
   def action_history(self) -> ActionHistory:
     return ActionHistory(self.history, self.action_space_size)
