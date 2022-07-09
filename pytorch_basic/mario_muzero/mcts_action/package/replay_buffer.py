@@ -15,6 +15,11 @@ class ReplayBuffer(object):
     self.buffer.append(game)
 
   def sample_batch(self, num_unroll_steps: int, td_steps: int):
+    # atari unrolls 5 steps
+    # a sample in the batch represents ot at+1 rt+1 ... ot+4 at+5 rt+5 
+    # returns (ot history target) per sample
+    # history at+1 ... at+5
+    # target: (zt rt+1 cvt), ... (zt+5 rt+6 cvt+5)
     games = [self.sample_game() for _ in range(self.batch_size)]
     game_pos = [(g, self.sample_position(g)) for g in games]
     return [(g.make_image(i), g.history[i:i + num_unroll_steps],

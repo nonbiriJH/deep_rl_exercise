@@ -5,13 +5,13 @@ from typing import List
 # A game is stored in the replay buffer when it is terminated
 class Game(object):
   """A single episode of interaction with the environment."""
-
+  #episode o0 a1 r1 o1 ... ot-1 at rt ot
   def __init__(self, action_space_size: int, discount: float):
     self.environment = Environment()  # Game specific environment.
-    self.history = [] #action history
-    self.rewards = [] #reward history
-    self.child_visits = [] #searched policy
-    self.root_values = [] #searched value
+    self.history = [] #action history [a1 a2 ...]
+    self.rewards = [] #reward history [r1 r2 ...]
+    self.child_visits = [] #searched policy [cv0 cv1 ...]
+    self.root_values = [] #searched value [v0 v1 ...]
     self.action_space_size = action_space_size
     self.discount = discount
 
@@ -44,6 +44,8 @@ class Game(object):
   def make_target(self, state_index: int, num_unroll_steps: int, td_steps: int):
     # The value target is the discounted root value of the search tree N steps
     # into the future, plus the discounted sum of all rewards until then.
+    # returns (z0 r1 cv0), ..., (zt rt+1 cvt)
+      # z0 = r1 + r2 + ... + v10
     targets = []
     for current_index in range(state_index, state_index + num_unroll_steps + 1):
       bootstrap_index = current_index + td_steps

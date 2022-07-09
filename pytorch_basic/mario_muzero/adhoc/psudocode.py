@@ -572,13 +572,18 @@ def update_weights(optimizer: tf.train.Optimizer, network: Network, batch,
   for image, actions, targets in batch:
     # Initial step, from the real observation.
     value, reward, policy_logits, hidden_state = network.initial_inference(
-        image)
-    predictions = [(1.0, value, reward, policy_logits)]
+        image) 
+        # in ot 
+        # out vt rt+1 cvt st
+    predictions = [(1.0, value, reward, policy_logits)]  
 
     # Recurrent steps, from action and previous hidden state.
     for action in actions:
       value, reward, policy_logits, hidden_state = network.recurrent_inference(
-          hidden_state, action)
+          hidden_state, action) 
+          # in st at+1 
+          # out vt+1 rt+2 cvt+1 st+1
+          # last iteration in st+4 at+5 out vt+5 rt+6 cvt+5 st+5
       predictions.append((1.0 / len(actions), value, reward, policy_logits))
 
       hidden_state = scale_gradient(hidden_state, 0.5)
